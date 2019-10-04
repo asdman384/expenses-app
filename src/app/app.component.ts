@@ -10,12 +10,14 @@ import { StorageService } from 'src/services/interfaces/storage';
 export class AppComponent implements OnInit {
 
     title = 'expenses-app';
-    sendEnabled = true;
+    enabled = true;
 
     token: string = ''
     user: string = ''
     amount: number
     category: string = ''
+    comment: string = ''
+    categories: string[] = [];
 
     constructor(
         private service: SpreadsheetService,
@@ -24,7 +26,7 @@ export class AppComponent implements OnInit {
 
     ngOnInit(): void {
         var savedfields = this.storage.get<SavedFields>('savedfields');
-        console.log(savedfields);
+        this.categories = this.storage.get<string[]>('categories');
 
         if (savedfields) {
             this.token = savedfields.token;
@@ -32,21 +34,35 @@ export class AppComponent implements OnInit {
         }
     }
 
-    sendClick(e) {
+    getCategories() {
+        if (!this.token)
+            return;
 
+        this.enabled = false;
+
+        this.service
+            .getCategories(this.token)
+            .subscribe(categories => {
+                this.enabled = true;
+                this.categories = categories.result;
+                this.storage.put<string[]>('categories', categories.result);
+            });
+    }
+
+    addClick(e) {
         if (!this.user || !this.token || !this.amount || !this.category)
             return;
 
-        this.sendEnabled = false;
-
-        console.log(this.token, this.user, this.amount, this.category);
+        this.enabled = false;
 
         this.service
-            .add(this.token, this.user, this.amount, this.category)
+            .add(this.token, this.user, this.amount, this.category, this.comment)
             .subscribe(respone => {
-                this.sendEnabled = true;
+                this.enabled = true;
                 this.storage.put<SavedFields>('savedfields', { token: this.token, user: this.user });
-                console.log(respone);
+                this.category = '';
+                this.comment = '';
+                this.amount = null;
             });
 
     }

@@ -9,13 +9,19 @@ export class SpreadsheetService {
 
     constructor(private http: HttpClient) { }
 
-    add(token: string, name: string, amount: number, category: string): Observable<AddResponse> {
-        return this.http.jsonp<AddResponse>(
-            `https://script.google.com/macros/s/${token}/exec?name=${name}&amount=${amount}&category=${category}`, 'callback');
+    add(token: string, name: string, amount: number, category: string, comment: string): Observable<Response<string>> {
+        return this.http.jsonp<Response<string>>(
+            `https://script.google.com/macros/s/${token}/exec?action=add&name=${name}&amount=${amount}&category=${category}&comment=${comment}`, 'callback');
+    }
+
+    getCategories(token: string): Observable<Response<string[]>> {
+        return this.http.jsonp<Response<string[]>>(
+            `https://script.google.com/macros/s/${token}/exec?action=getcategories`, 'callback');
     }
 
 }
 
-export class AddResponse {
+export class Response<TResponse> {
     status: string;
+    result: TResponse;
 }

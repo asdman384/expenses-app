@@ -15,59 +15,53 @@
     </svg>
     <span>{{ title }}</span>
     <div class="spacer"></div>
-
 </div>
 
 <div class="content" role="main">
-
-
     <div class="card-container">
-        <label>
-            <div>token:</div>
-            <input class="card" type="text" [(ngModel)]="token">
-        </label>
+        <div class="inline-flex">
+            <label>
+                <div>token:</div>
+                <input class="card" type="text" [(ngModel)]="token">
+            </label>
 
-        <label>
-            <div>user:</div>
-            <select class="card" [(ngModel)]="user">
-                <option value="Oleg">Oleg</option>
-                <option value="Hanna">Hanna</option>
-            </select>
-        </label>
+            <label>
+                <div>user:</div>
+                <select class="card" [(ngModel)]="user">
+                    <option value="Oleg">Oleg</option>
+                    <option value="Hanna">Hanna</option>
+                </select>
+            </label>
+        </div>
 
         <label>
             <div>amount:</div>
             <input class="card" type="number" [(ngModel)]="amount">
         </label>
 
+        <div>
+            <label>
+                <div>category:</div>
+                <select class="card" [(ngModel)]="category">
+                    <option *ngFor="let c of categories" [ngValue]="c[0]">{{c[0]}}</option>
+                </select>
+            </label>
+
+            <button [disabled]="!enabled" class="card circle-link" target="_self" rel="noopener" href="#"
+                (click)="getCategories()">
+                <span>&#x21bb;</span>
+            </button>
+        </div>
+
         <label>
-            <div>category:</div>
-            <select class="card" [(ngModel)]="category">
-                <option value="Нямка">Нямка</option>
-                <option value="Продукты">Продукты</option>
-                <option value="Транспорт">Транспорт</option>
-                <option value="Обед">Обед</option>
-                <option value="Ресторан">Ресторан</option>
-                <option value="Хозтовары">Хозтовары</option>
-                <option value="Одежда">Одежда</option>
-                <option value="Аренда">Аренда</option>
-                <option value="Подарки">Подарки</option>
-                <option value="Медикаменты">Медикаменты</option>
-                <option value="Медицина">Медицина</option>
-                <option value="Косметика">Косметика</option>
-                <option value="Поездки">Поездки</option>
-                <option value="Бижутерия">Бижутерия</option>
-                <option value="Покупки (разное)">Покупки (разное)</option>
-                <option value="Родителям">Родителям</option>
-                <option value="Абонплата(моб/интернет)">Абонплата(моб/интернет)</option>
-            </select>
+            <div>comment:</div>
+            <input class="card" type="text" [(ngModel)]="comment" style="width: 100%">
         </label>
 
-        <button [disabled]="!this.user || !this.token || !this.amount || !this.category || !sendEnabled" class="card"
-            target="_self" rel="noopener" href="#" (click)="sendClick($event)">
-            <span>Send</span>
+        <button [disabled]="!this.user || !this.token || !this.amount || !this.category || !enabled" class="card"
+            target="_self" rel="noopener" href="#" (click)="addClick($event)">
+            <span>Add</span>
         </button>
-
     </div>
 
     <footer>
