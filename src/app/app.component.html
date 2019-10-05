@@ -4,7 +4,7 @@
     </div>
     <h3>{{ title }}</h3>
     <button type="button" class="nes-btn is-warning" style="margin-right: 10px"
-        (click)="settingsdialog.showModal()">T</button>
+        (click)="settingsdialog.style.display = 'block'">T</button>
 </div>
 
 <div class="content" role="main">
@@ -51,8 +51,8 @@
 
 </div>
 
-<dialog #settingsdialog class="nes-dialog is-rounded">
-    <form method="dialog">
+<div #settingsdialog id="favDialog">
+    <form method="dialog" class="nes-dialog is-rounded">
         <p class="title">Settings</p>
         <div class="nes-input-container">
             <label for="name_token">Token:</label>
@@ -60,19 +60,20 @@
                 [ngModelOptions]="{standalone: true}">
         </div>
         <menu class="dialog-menu">
-            <button class="nes-btn is-primary" (click)="settingsdialog.close()">OK</button>
+            <button class="nes-btn is-primary" (click)="settingsdialog.style.display = 'none'">OK</button>
         </menu>
     </form>
-</dialog>
+</div>
 
-<dialog #errordialog class="nes-dialog is-rounded">
-    <form method="dialog">
+<div #errordialog id="favDialog">
+    <form method="dialog" class="nes-dialog is-rounded">
         <p class="title">Error</p>
         <p style="word-break: break-all">{{errorMessage}}</p>
         <menu class="dialog-menu">
-            <button class="nes-btn is-primary" (click)="errordialog.close()">OK</button>
+            <button class="nes-btn is-primary" (click)="errordialog.style.display = 'none'">OK</button>
         </menu>
     </form>
-</dialog>
+</div>
+
 
 <audio #sound preload="auto" src="./assets/mario_coin_sound.mp3"></audio>

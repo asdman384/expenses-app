@@ -66,7 +66,7 @@ export class AppComponent implements OnInit {
 
     handleError<TResult>(error) {
         this.errorMessage = error.message;
-        this.errorDialog.nativeElement.showModal();
+        this.errorDialog.nativeElement.style.display = 'block';
         return of(new Response<TResult>());
     }
 }
