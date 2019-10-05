@@ -42,7 +42,7 @@
 #favDialog form {
     position: absolute;
     top: 25%;
-    margin: 12px;
+    margin: 10px;
     background: #fff;
     z-index: 2;
 }
