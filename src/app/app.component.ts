@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { SpreadsheetService } from 'src/services/spreadsheet.service';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { StorageService } from 'src/services/interfaces/storage';
+import { SpreadsheetService, Response } from 'src/services/spreadsheet.service';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs/internal/observable/of';
 
 @Component({
     selector: 'app-root',
@@ -9,8 +11,10 @@ import { StorageService } from 'src/services/interfaces/storage';
 })
 export class AppComponent implements OnInit {
 
-    title = 'expenses-app';
-    enabled = true;
+    @ViewChild('errordialog', { static: false }) errorDialog: ElementRef
+
+    title = 'Expenses app';
+    isLoading = false;
 
     token: string = ''
     user: string = ''
@@ -18,6 +22,7 @@ export class AppComponent implements OnInit {
     category: string = ''
     comment: string = ''
     categories: string[] = [];
+    errorMessage: string;
 
     constructor(
         private service: SpreadsheetService,
@@ -25,9 +30,8 @@ export class AppComponent implements OnInit {
     }
 
     ngOnInit(): void {
-        var savedfields = this.storage.get<SavedFields>('savedfields');
         this.categories = this.storage.get<string[]>('categories');
-
+        var savedfields = this.storage.get<SavedFields>('savedfields');
         if (savedfields) {
             this.token = savedfields.token;
             this.user = savedfields.user;
@@ -35,36 +39,35 @@ export class AppComponent implements OnInit {
     }
 
     getCategories() {
-        if (!this.token)
-            return;
-
-        this.enabled = false;
-
+        this.isLoading = true;
         this.service
             .getCategories(this.token)
+            .pipe(catchError(error => this.handleError<string[]>(error)))
             .subscribe(categories => {
-                this.enabled = true;
+                this.isLoading = false;
                 this.categories = categories.result;
                 this.storage.put<string[]>('categories', categories.result);
             });
     }
 
-    addClick(e) {
-        if (!this.user || !this.token || !this.amount || !this.category)
-            return;
-
-        this.enabled = false;
-
+    addClick() {
+        this.isLoading = true;
         this.service
             .add(this.token, this.user, this.amount, this.category, this.comment)
+            .pipe(catchError(error => this.handleError<string>(error)))
             .subscribe(respone => {
-                this.enabled = true;
+                this.isLoading = false;
                 this.storage.put<SavedFields>('savedfields', { token: this.token, user: this.user });
                 this.category = '';
                 this.comment = '';
                 this.amount = null;
             });
+    }
 
+    handleError<TResult>(error) {
+        this.errorMessage = error.message;
+        this.errorDialog.nativeElement.showModal();
+        return of(new Response<TResult>());
     }
 }
 

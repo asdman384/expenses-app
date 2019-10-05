@@ -18,10 +18,9 @@ export class SpreadsheetService {
         return this.http.jsonp<Response<string[]>>(
             `https://script.google.com/macros/s/${token}/exec?action=getcategories`, 'callback');
     }
-
 }
 
-export class Response<TResponse> {
+export class Response<TResult> {
     status: string;
-    result: TResponse;
+    result: TResult;
 }
