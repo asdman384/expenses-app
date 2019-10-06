@@ -1,5 +1,5 @@
 <div class="toolbar" role="banner">
-    <div class="coin-container" [ngClass]="{ 'animation': isLoading }">
+    <div class="coin-container" [ngClass]="{ 'animation': isLoading }" (click)="sound.currentTime = 0; sound.play();">
         <i class="nes-icon coin is-medium" [ngClass]="{ 'animation': isLoading }"></i>
     </div>
     <h3>{{ title }}</h3>
@@ -75,5 +75,4 @@
     </form>
 </div>
 
-
-<audio #sound preload="auto" src="./assets/mario_coin_sound.mp3"></audio>
+<audio #sound preload="auto" src="./assets/smb_coin.wav"></audio>
