@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
     comment: string = ''
     categories: string[] = [];
     errorMessage: string;
+    lastRows: string[][];
 
     constructor(
         private service: SpreadsheetService,
@@ -54,14 +55,19 @@ export class AppComponent implements OnInit {
         this.isLoading = true;
         this.service
             .add(this.token, this.user, this.amount, this.category, this.comment)
-            .pipe(catchError(error => this.handleError<string>(error)))
-            .subscribe(respone => {
+            .pipe(catchError(error => this.handleError<string[][]>(error)))
+            .subscribe(response => {
+                this.lastRows = response.result;
                 this.isLoading = false;
                 this.storage.put<SavedFields>('savedfields', { token: this.token, user: this.user });
                 this.category = '';
                 this.comment = '';
                 this.amount = null;
             });
+    }
+
+    formatDate(date: string) {
+        return new Date(date).toLocaleDateString("ru")
     }
 
     handleError<TResult>(error) {

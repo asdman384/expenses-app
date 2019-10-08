@@ -9,8 +9,8 @@ export class SpreadsheetService {
 
     constructor(private http: HttpClient) { }
 
-    add(token: string, name: string, amount: number, category: string, comment: string): Observable<Response<string>> {
-        return this.http.jsonp<Response<string>>(
+    add(token: string, name: string, amount: number, category: string, comment: string): Observable<Response<string[][]>> {
+        return this.http.jsonp<Response<string[][]>>(
             `https://script.google.com/macros/s/${token}/exec?action=add&name=${name}&amount=${amount}&category=${category}&comment=${comment}`, 'callback');
     }
 

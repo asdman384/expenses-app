@@ -49,6 +49,18 @@
         [ngClass]="{ 'is-disabled': !this.user || !this.token || !this.amount || !this.category || isLoading }"
         (click)="addClick()" (click)="sound.play();">Add</button>
 
+    <div *ngIf="lastRows" class="nes-table-responsive" style="font-size: 8px; width: 100%;">
+        <table class="nes-table is-bordered is-centered" style="width: calc(100% - 8px);">
+            <tbody>
+                <tr *ngFor="let r of lastRows">
+                    <td style="width: 105px">{{formatDate(r[0])}}</td>
+                    <td style="width: 55px">{{r[1]}}</td>
+                    <td>{{r[2]}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
 </div>
 
 <div #settingsdialog id="favDialog">
