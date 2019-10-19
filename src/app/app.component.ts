@@ -1,31 +1,36 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { StorageService } from 'src/services/interfaces/storage';
-import { SpreadsheetService, Response } from 'src/services/spreadsheet.service';
-import { catchError } from 'rxjs/operators';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { of } from 'rxjs/internal/observable/of';
+import { catchError } from 'rxjs/operators';
+import { ModalService } from 'src/modal/modal.service';
+import { SheetData } from 'src/model/SheetData';
+import { StorageService } from 'src/services/interfaces/storage';
+import { Response, SpreadsheetService } from 'src/services/spreadsheet.service';
+import { MessageBoxComponent } from 'src/modal/dialogs/message-box/message-box.component';
 
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
     styleUrls: ['./app.component.css']
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
+    ngAfterViewInit(): void {
+    }
 
-    @ViewChild('errordialog', { static: false }) errorDialog: ElementRef
-
-    title = 'Expenses app';
     isLoading = false;
 
     token: string = ''
+
     user: string = ''
     amount: number
     category: string = ''
     comment: string = ''
+
     categories: string[] = [];
-    errorMessage: string;
-    lastRows: string[][];
+    lastRows: SheetData[];
+    monthData: SheetData[];
 
     constructor(
+        private modalService: ModalService,
         private service: SpreadsheetService,
         private storage: StorageService) {
     }
@@ -52,10 +57,11 @@ export class AppComponent implements OnInit {
     }
 
     addClick() {
+        this.monthData = null;
         this.isLoading = true;
         this.service
             .add(this.token, this.user, this.amount, this.category, this.comment)
-            .pipe(catchError(error => this.handleError<string[][]>(error)))
+            .pipe(catchError(error => this.handleError<SheetData[]>(error)))
             .subscribe(response => {
                 this.lastRows = response.result;
                 this.isLoading = false;
@@ -66,13 +72,21 @@ export class AppComponent implements OnInit {
             });
     }
 
-    formatDate(date: string) {
-        return new Date(date).toLocaleDateString("ru")
+    getMonthData(month: number) {
+
+        this.isLoading = true;
+        this.service
+            .getMonthData(this.token, this.user, month - 1)
+            .pipe(catchError(error => this.handleError<SheetData[]>(error)))
+            .subscribe(response => {
+                this.monthData = response.result.length == 1 ? null : response.result.slice(1);
+                this.lastRows = null;
+                this.isLoading = false;
+            });
     }
 
     handleError<TResult>(error) {
-        this.errorMessage = error.message;
-        this.errorDialog.nativeElement.style.display = 'block';
+        this.modalService.show({ T: MessageBoxComponent, title: `Error`, message: error.message });
         return of(new Response<TResult>());
     }
 }

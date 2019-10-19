@@ -1,0 +1,21 @@
+<div style="width: 100%">
+    <div *ngIf="reducedData?.data.length > 0" class="nes-table-responsive" style="font-size: 8px; width: 100%;">
+        <table class="nes-table is-bordered is-centered" style="width: calc(100% - 8px);">
+            <tbody>
+                <tr (click)="reducedData = reduceByCategory(dataSet);">
+                    <th class="chart-bar">
+                        <span><u>{{reducedData.category}} total:</u></span> <span>{{reducedData.summ}}</span>
+                    </th>
+                </tr>
+                <tr *ngFor="let item of reducedData.data; let i = index;">
+                    <td class="chart-bar" (click)="barClick(item.category, item.comment, $event)"
+                        title="{{item.comment}}">
+                        <span class="col-form-label">{{item.category}}</span>
+                        <span>{{item.amount}}</span>
+                        <div [ngStyle]="{width: item.amount / reducedData.summ * 100 +'%'}" class="progress-bar"></div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

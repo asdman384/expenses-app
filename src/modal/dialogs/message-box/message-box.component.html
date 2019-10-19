@@ -1,0 +1,10 @@
+<div class="message-box">
+    <form method="dialog" class="nes-dialog is-rounded">
+        <h5>{{title}}</h5>
+        <div [innerHtml]="message" style="word-break: break-all"></div>
+
+        <menu class="dialog-menu">
+            <button class="nes-btn is-primary" (click)="onAccept.emit($event)">OK</button>
+        </menu>
+    </form>
+</div>
