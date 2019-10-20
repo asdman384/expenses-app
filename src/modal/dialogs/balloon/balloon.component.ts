@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, ElementRef } from '@angular/core';
 import { IDialog } from '../idialog';
 
 @Component({
@@ -14,9 +14,11 @@ export class BalloonComponent implements OnInit, IDialog {
     public title: string;
     public message: string;
 
-    constructor() { }
+    constructor(private element: ElementRef) { }
 
     ngOnInit() {
+        this.element.nativeElement
+            .addEventListener('click', e => this.onAccept.emit());
     }
 
 }
